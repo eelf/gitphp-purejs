@@ -6,6 +6,7 @@ var Transport = {
     request: function(method, url, data, cb) {
         var xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
                 cb(xhr.responseText);
@@ -57,13 +58,18 @@ var LoginWidget = {
         Transport.login(JSON.stringify({name: name, password: password}), LoginWidget.submit_done);
     },
     submit_done: function(e) {
-        console.log(e);
+        if (e.page == 'dashboard') {
+            App.dashboard();
+        } else {
+
+        }
     },
     render: function() {
         Views.get('login', function(page) {
-            LoginWidget.el = document.createElement('div');
+            //LoginWidget.el = document.createElement('div');
+            LoginWidget.el = document.getElementById('app');
             LoginWidget.el.innerHTML = page;
-            document.body.appendChild(LoginWidget.el);
+            //document.body.appendChild(LoginWidget.el);
             LoginWidget.init(LoginWidget.el);
         });
     }
@@ -99,6 +105,11 @@ var App = {
         if (d.page == 'login') {
             LoginWidget.render();
         }
+    },
+    dashboard: function() {
+        Views.get('dashboard', function (page) {
+            document.getElementById('app').innerHTML = page;
+        });
     }
 };
 

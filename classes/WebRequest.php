@@ -5,17 +5,28 @@
 
 namespace Gitphp;
 
-class WebRequest
-{
-    public static function generic()
-    {
-        $Controller = Routes::action();
+class WebRequest {
+    public static function generic() {
+        $Logger = new Log_Logger();
 
-        $Req = new Request();
+        $Req = Request::initFromServer();
+
+        $Controller = Routes::action($Req);
+
         $Resp = new Response();
-        /** @var $Controller Controller_Startup */
-        $resp = $Controller->run($Req, $Resp);
-        echo json_encode($resp);
 
+        if ($Controller instanceof IWantSession) {
+            $Controller->Session = Session::startFromCookie($Req, $Resp);
+        }
+        /** @var $Controller Controller_Startup */
+        $Controller->run($Req, $Resp);
+
+        if ($Controller instanceof IWantSession) {
+            $Controller->Session->finish();
+        }
+
+        $Resp->setBodyItem('log', $Logger->getLines());
+
+        $Resp->out();
     }
 }

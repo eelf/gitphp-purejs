@@ -5,15 +5,11 @@
 
 namespace Gitphp;
 
-class Routes
-{
-    public static function url($controller, $action, $params) {
+class Routes {
+    public static function url($controller, $action, $params) {}
 
-    }
-
-    public static function action() {
-        $parts = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
-        $action = $parts[0];
+    public static function action(Request $Req) {
+        $action = $Req->comp(1);
         if ($action == 'login') {
             $Controller = new Controller_Login();
         } else {

@@ -26,10 +26,7 @@ $autoload_resolver = function($class) use ($ns, $default_path, $autoload_path_bu
     $parts = preg_split('#\\\\|_#', $class);
     $filename = array_pop($parts);
 
-    /* no more parts or first part is not served namespace -> it may be default path */
-    if (!$parts || !isset($ns[$parts[0]])) {
-        return $autoload_path_builder($default_path, $parts, $filename);
-    } else {
+    if ($parts && isset($ns[$parts[0]])) {
         $ptr = $ns;
         foreach ($parts as $idx => $part) {
             if (!isset($ptr[$part])) return false;
@@ -37,6 +34,7 @@ $autoload_resolver = function($class) use ($ns, $default_path, $autoload_path_bu
             else return $autoload_path_builder($ptr[$part], array_slice($parts, $idx + 1), $filename);
         }
     }
+    return $autoload_path_builder($default_path, $parts, $filename);
 };
 
 $autoloader = function($class) use ($autoload_resolver) {

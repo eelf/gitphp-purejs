@@ -6,26 +6,63 @@
 namespace Gitphp;
 
 class Request {
-    private $url_parts,
-        $first;
+    private $env, $get, $post, $cookie, $server;
+    private $url_parts;
+    private $body;
+    private $body_err;
 
-    public function init() {
+    public static function initFromServer() {
         $url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:') . '//' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-        $this->url_parts = parse_url($url);
-        $this->url_parts['path_exp'] = explode('/', preg_replace("#^/+|/+$|(/)/*#", '$1', $this->url_parts['path']));
-
-        $this->first = isset($this->url_parts['path_exp'][0]) ? $this->url_parts['path_exp'][0] : null;
+        $Request = new self($_ENV, $_GET, $_POST, $_COOKIE, $_SERVER);
+        $Request->init($url);
+        return $Request;
     }
 
-    public function first() {
-        return $this->first;
+    public function __construct($env, $get, $post, $cookie, $server) {
+        $this->env = $env;
+        $this->get = $get;
+        $this->post = $post;
+        $this->cookie = $cookie;
+        $this->server = $server;
+    }
+
+    public function init($url) {
+        $this->url_parts = parse_url($url);
+        $this->url_parts['path_exp'] = explode('/', trim($this->url_parts['path'], '/'));
+
+        $this->body = file_get_contents('php://input');
+
+        if ($this->server('REQUEST_METHOD') == 'POST' && $this->server('HTTP_CONTENT_TYPE') == 'application/json') {
+            $body = json_decode($this->body, true);
+            if ($body === null && $this->body != 'null') {
+                $this->body_err = json_last_error() . ':' . json_last_error_msg();
+            } else {
+                $this->body = $body;
+            }
+        }
     }
 
     public function get($name) {
-        return isset($_GET[$name]) ? $_GET[$name] : null;
+        return isset($this->get[$name]) ? $this->get[$name] : null;
+    }
+
+    public function cookie($name) {
+        return isset($this->cookie[$name]) ? $this->cookie[$name] : null;
+    }
+
+    public function server($name) {
+        return isset($this->server[$name]) ? $this->server[$name] : null;
     }
 
     public function comp($idx) {
         return isset($this->url_parts['path_exp'][$idx]) ? $this->url_parts['path_exp'][$idx] : null;
+    }
+
+    public function body() {
+        return $this->body;
+    }
+
+    public function body_err() {
+        return $this->body_err;
     }
 }
