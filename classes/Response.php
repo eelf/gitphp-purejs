@@ -34,12 +34,12 @@ class Response {
         $this->headers[] = "$name: $value";
     }
 
-    public function cookie($name, $value, $expire) {
+    public function cookie($name, $value, $expire, $path) {
         $this->cookies[] = [
             'name' => $name,
             'value' => $value,
             'expire' => $expire,
-            'path' => null,
+            'path' => $path,
             'domain' => null,
             'secure' => null,
         ];

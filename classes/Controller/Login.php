@@ -17,7 +17,11 @@ class Controller_Login implements IWantSession {
             $Resp->setBodyItem('error', $Req->body_err());
         } else {
             $body = $Req->body();
+
+            WebRequest::logger()->info('req->body:' . var_export($body, 1));
+
             if ($body['name'] == 'ezh' && $body['password'] == '123') {
+                $this->Session['user_id'] = 'ezh';
                 $Resp->setBodyItem('page', 'dashboard');
             } else {
                 $Resp->setBodyItem('page', 'login');

@@ -8,6 +8,10 @@ namespace Gitphp;
 class Log_Logger {
     protected $lines = [];
 
+    public function error($errno, $errstr) {
+        $this->lines[] = "$errno:$errstr";
+    }
+
     public function info($msg) {
         $this->lines[] = $msg;
     }

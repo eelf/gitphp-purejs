@@ -6,8 +6,23 @@
 namespace Gitphp;
 
 class WebRequest {
+    /**
+     * @var Log_Logger
+     */
+    private static $logger;
+
+    /**
+     * @return Log_Logger
+     */
+    public static function logger() {
+        return self::$logger;
+    }
+
     public static function generic() {
-        $Logger = new Log_Logger();
+//        ini_set('display_errors', 1);
+        self::$logger = new Log_Logger();
+
+        set_error_handler([self::$logger, 'error']);
 
         $Req = Request::initFromServer();
 
@@ -25,7 +40,7 @@ class WebRequest {
             $Controller->Session->finish();
         }
 
-        $Resp->setBodyItem('log', $Logger->getLines());
+        $Resp->setBodyItem('log', self::$logger->getLines());
 
         $Resp->out();
     }

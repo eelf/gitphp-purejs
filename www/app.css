@@ -1,3 +1,9 @@
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
 .err {
     position: absolute;
     top: 0;
@@ -6,4 +12,13 @@
     bottom: 0;
     background: #fdd;
     color: #d00;
+}
+#log {
+    font: 11px Menlo, monospace;
+    padding: 5px;
+    outline: 1px solid red;
+}
+#app {
+    outline: 1px solid #0f0;
+    background: #aaa;
 }
