@@ -38,13 +38,13 @@ var Transport = {
         });
     },
 
-    app_startup: function(cb) {
-        Transport.get_json('GET', '/app/startup', null, cb);
+    app_startup: function(data, cb) {
+        Transport.get_json('GET', '/app/startup', data, cb);
     },
     login: function(data, cb) {
         Transport.get_json('POST', '/app/login', data, cb);
     },
     logout: function(data, cb) {
         Transport.get_json('POST', '/app/logout', data, cb);
-    },
+    }
 };

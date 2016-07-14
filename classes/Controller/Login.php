@@ -20,11 +20,15 @@ class Controller_Login implements IWantSession {
 
             WebRequest::logger()->info('req->body:' . var_export($body, 1));
 
-            if ($body['name'] == 'ezh' && $body['password'] == '123') {
+            if (empty($body['name'])) {
+                $Resp->setBodyItem('error', 'Empty login');
+            } else if (empty($body['password'])) {
+                $Resp->setBodyItem('error', 'Empty password');
+            } else if ($body['name'] == 'ezh' && $body['password'] == '123') {
                 $this->Session['user_id'] = 'ezh';
                 $Resp->setBodyItem('page', 'dashboard');
             } else {
-                $Resp->setBodyItem('page', 'login');
+                $Resp->setBodyItem('error', 'Bad username or password');
             }
         }
     }

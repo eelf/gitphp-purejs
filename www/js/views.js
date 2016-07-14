@@ -7,9 +7,10 @@ var Views = {
             Views.pages[name] = html;
             apply_cb(Views.pages[name]);
         };
-        Transport.request('GET', '/' + name + '.html', null, load_cb);
+        Transport.request('GET', '/templates/' + name + '.html', null, load_cb);
     },
     get: function(name, cb) {
+        console.log('loading template' + name);
         var apply_cb = function(page) {
             cb(page);
         };

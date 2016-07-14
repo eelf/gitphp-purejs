@@ -12,6 +12,8 @@ class Routes {
         $action = $Req->comp(1);
         if ($action == 'login') {
             $Controller = new Controller_Login();
+        } else if ($action == 'logout') {
+            $Controller = new Controller_Logout();
         } else {
             $Controller = new Controller_Startup();
         }
