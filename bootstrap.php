@@ -3,43 +3,65 @@
  * @author Evgeniy Makhrov <emakhrov@gmail.com>
  */
 
-$root = __DIR__;
+class Bootstrap {
+    private
+        $ext,
+        $root,
+        $config,
+        $default_path;
 
-$ext = 'php';
-
-$ns = [
-    'Gitphp' => $root . '/classes',
-    'Ololo' => [
-        'Some' => $root . '/classes/omg',
-        'Other' => $root . '/classes/any',
-    ],
-];
-//$default_path = $root . '/classes';
-$default_path = '';
-
-$autoload_path_builder = function($base, $parts, $filename) use ($ext) {
-    $pathname = $base . ($parts ? '/' . implode('/', $parts) : '') . '/' . $filename . '.' . $ext;
-    return is_file($pathname) ? $pathname : false;
-};
-
-$autoload_resolver = function($class) use ($ns, $default_path, $autoload_path_builder) {
-    $parts = preg_split('#\\\\|_#', $class);
-    $filename = array_pop($parts);
-
-    if ($parts && isset($ns[$parts[0]])) {
-        $ptr = $ns;
-        foreach ($parts as $idx => $part) {
-            if (!isset($ptr[$part])) return false;
-            if (!is_string($ptr[$part])) $ptr = $ptr[$part];
-            else return $autoload_path_builder($ptr[$part], array_slice($parts, $idx + 1), $filename);
-        }
+    public function __construct($root, $ext, $config, $default_path) {
+        $this->root = $root;
+        $this->ext = $ext;
+        $this->config= $config;
+        $this->default_path= $default_path;
     }
-    return $autoload_path_builder($default_path, $parts, $filename);
-};
 
-$autoloader = function($class) use ($autoload_resolver) {
-    $path = $autoload_resolver($class);
-    if ($path) require_once $path;
-};
+    public function buildPath($base, $parts, $filename) {
+        $pathname = $this->root . $base . ($parts ? '/' . implode('/', $parts) : '') . '/' . $filename . '.' . $this->ext;
+        return is_file($pathname) ? $pathname : false;
+    }
 
-spl_autoload_register($autoloader, /* throw */true, /* prepend */true);
+    public function resolvePath($class) {
+        $parts = preg_split('#\\\\|_#', $class);
+        $filename = array_pop($parts);
+
+        if ($parts && isset($this->config[$parts[0]])) {
+            $ptr = $this->config;
+            foreach ($parts as $idx => $part) {
+                if (!isset($ptr[$part])) return false;
+                if (!is_string($ptr[$part])) $ptr = $ptr[$part];
+                else return $this->buildPath($ptr[$part], array_slice($parts, $idx + 1), $filename);
+            }
+        }
+        return $this->buildPath($this->default_path, $parts, $filename);
+    }
+
+    public function autoload($class) {
+        $path = $this->resolvePath($class);
+        if ($path) require_once $path;
+    }
+
+    public function register() {
+        spl_autoload_register([$this, 'autoload'], /* throw */true, /* prepend */true);
+        return $this;
+    }
+
+    public function getRoot() {
+        return $this->root;
+    }
+}
+
+return (new Bootstrap(
+    __DIR__,
+    'php',
+    [
+        'Gitphp' => '/classes',
+        'Ololo' => [
+            'Some' => '/classes/omg',
+            'Other' => '/classes/any',
+        ],
+    ],
+    ''
+))
+    ->register();

@@ -5,11 +5,10 @@
 
 namespace Gitphp;
 
-class Controller_Startup implements IWantSession {
-    public $Session;
-
+class Controller_Startup {
     public function run(Request $Req, Response $Resp) {
-        if (!$this->Session['user_id']) $Resp->setBodyItem('page', 'login');
+        $Session = Context::session();
+        if (!$Session['user_id']) $Resp->setBodyItem('page', 'login');
         else $Resp->setBodyItem('page', 'dashboard');
     }
 }

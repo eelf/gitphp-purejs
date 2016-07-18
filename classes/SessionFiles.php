@@ -9,7 +9,8 @@ class SessionFiles extends Session {
     const PREFIX = '/tmp/phpsess';
     const GC_DIVISOR = 1000;
     const GC_QUOTIENT = 1;
-    const LIFETIME = 604800; // week
+    const LIFETIME = 86400 * 7; // week
+    const ATIME = 86400; // day
 
     protected $id;
     protected $cookie_name;
@@ -36,23 +37,24 @@ class SessionFiles extends Session {
     }
 
     public function __construct($cookie_name, Request $Req, Response $Resp) {
+        $this->cookie_name = $cookie_name;
+        $this->Resp = $Resp;
+
         $id = $Req->cookie($cookie_name);
         if (strlen($id) != 32) $id = null;
-        if (!$id) {
-            $id = self::generateId();
-        }
-        $this->id = $id;
-        $this->Resp = $Resp;
-        $this->cookie_name = $cookie_name;
 
-        $filename = self::PREFIX . $id;
-        $rows = file_exists($filename) ? file($filename, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES) : null;
-        if (!$rows) {
-            return;
-        }
-        foreach ($rows as $row) {
-            list ($k, $v) = explode('=', $row, 2);
-            $this->data[$k] = stripcslashes($v);
+        if (!$id) {
+            $this->id = self::generateId();
+        } else {
+            $this->id = $id;
+            $filename = self::getFilename($this->id);
+            $rows = file_exists($filename) ? file($filename, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES) : null;
+            if ($rows) {
+                foreach ($rows as $row) {
+                    list ($k, $v) = explode('=', $row, 2);
+                    $this->data[$k] = stripcslashes($v);
+                }
+            }
         }
     }
 
@@ -66,10 +68,19 @@ class SessionFiles extends Session {
                 $rows[] = "$k=" . addslashes($v) . "\n";
             }
             $str = implode("\n", $rows);
-            file_put_contents(self::PREFIX . $this->id, $str);
+            file_put_contents(self::getFilename($this->id), $str);
             self::gc();
             $this->changed = $this->deleted = [];
+        } else {
+            $filename = self::getFilename($this->id);
+            if (file_exists($filename) && filemtime($filename) < time() - self::ATIME) {
+                touch($filename);
+            }
         }
+    }
+
+    private static function getFilename($id) {
+        return self::PREFIX . $id;
     }
 
     public function destroy() {
@@ -85,7 +96,7 @@ class SessionFiles extends Session {
     }
 
     public function offsetGet($offset) {
-        return isset($this->data[$offset]) ? $this->data[$offset] : null;
+        return $this->data[$offset] ?? null;
     }
 
     public function offsetSet($offset, $value) {

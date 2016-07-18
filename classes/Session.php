@@ -15,7 +15,6 @@ abstract class Session implements \ArrayAccess {
      */
     public static function startFromCookie(Request $Req, Response $Resp) {
         $driver_class = SessionFiles::class;
-//        $driver_class = SessionNative::class;
         $Driver = new $driver_class(self::COOKIE_NAME, $Req, $Resp);
         return $Driver;
     }

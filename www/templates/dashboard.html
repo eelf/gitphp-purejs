@@ -2,4 +2,18 @@
 
 <ul>
     <li><a id="dashboard_logout" href="{{logout_url}}">Logout</a></li>
+    {{begin items}}
+    <li><a id="{{id}}" href="{{url}}">{{name}}</a></li>
+    {{end items}}
 </ul>
+
+<div id="projects">
+{{begin project}}
+    <div>
+        <h4>{{name}}</h4>
+        <a href="{{url}}">summary</a>
+    </div>
+{{end project}}
+</div>
+
+

@@ -27,12 +27,11 @@ var utils = {
         modules.forEach(function(el) {utils.loading[el] = true});
         utils.each(modules, utils.load_module, fun);
     },
-    async: function (u, c) {
-        var d = document, t = 'script',
-            o = d.createElement(t),
-            s = d.getElementsByTagName(t)[0];
-        o.src = u;
-        o.addEventListener('load', c, false);
+    async: function (url, fun) {
+        var o = document.createElement('script'),
+            s = document.getElementsByTagName('script')[0];
+        o.src = url;
+        o.addEventListener('load', fun, false);
         s.parentNode.insertBefore(o, s);
     }
 };
@@ -43,7 +42,6 @@ var App = {
     AllModulesLoaded: false,
     ready: function() {
         if (!App.DOMContentLoadedHappened || !App.AllModulesLoaded) return;
-        console.log('App.ready');
         Router.init();
         Transport.app_startup({url: location.href}, App.app_startup_done);
     },

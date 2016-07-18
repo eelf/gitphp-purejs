@@ -5,11 +5,10 @@
 
 namespace Gitphp;
 
-class Controller_Login implements IWantSession {
-    public $Session;
-
+class Controller_Login {
     public function run(Request $Req, Response $Resp) {
-        $user_id = $this->Session['user_id'];
+        $Session = Context::session();
+        $user_id = $Session['user_id'];
 
         if ($user_id) {
             $Resp->setBodyItem('page', 'dashboard');
@@ -25,7 +24,7 @@ class Controller_Login implements IWantSession {
             } else if (empty($body['password'])) {
                 $Resp->setBodyItem('error', 'Empty password');
             } else if ($body['name'] == 'ezh' && $body['password'] == '123') {
-                $this->Session['user_id'] = 'ezh';
+                $Session['user_id'] = 'ezh';
                 $Resp->setBodyItem('page', 'dashboard');
             } else {
                 $Resp->setBodyItem('error', 'Bad username or password');

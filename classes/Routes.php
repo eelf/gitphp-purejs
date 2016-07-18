@@ -6,17 +6,22 @@
 namespace Gitphp;
 
 class Routes {
+    private static $map = [
+        'login' => Controller_Login::class,
+        'logout' => Controller_Logout::class,
+        'projects' => Controller_Projects::class,
+        '' => Controller_Startup::class,
+    ];
+
     public static function url($controller, $action, $params) {}
 
+    /**
+     * @param Request $Req
+     * @return Controller_Startup
+     */
     public static function action(Request $Req) {
         $action = $Req->comp(1);
-        if ($action == 'login') {
-            $Controller = new Controller_Login();
-        } else if ($action == 'logout') {
-            $Controller = new Controller_Logout();
-        } else {
-            $Controller = new Controller_Startup();
-        }
-        return $Controller;
+        $controller_class = self::$map[$action] ?? self::$map[''];
+        return new $controller_class;
     }
 }

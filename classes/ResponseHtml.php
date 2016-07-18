@@ -5,7 +5,7 @@
 
 namespace Gitphp;
 
-class Response {
+class ResponseHtml {
     private $headers = [], $cookies = [], $body, $is_done = false;
 
     public function out() {
@@ -22,7 +22,7 @@ class Response {
                 $cookie['secure']
             );
         }
-        echo json_encode($this->body);
+        echo $this->body;
     }
 
     public function header($name, $value) {
@@ -41,7 +41,14 @@ class Response {
     }
 
     public function redirect($location) {
-        $this->headers[] = "Location: $location";
+        if (StatSlow::enabled()) {
+            echo "<div style='font: 18px monospace;'><a href='$location'>$location</a></div><pre>";
+            echo (new \Exception())->getTraceAsString();
+            StatSlow::displayErrors();
+            echo "</pre>";
+        } else {
+            $this->headers[] = "Location: $location";
+        }
         $this->is_done = true;
     }
 
@@ -49,7 +56,7 @@ class Response {
         return $this->is_done;
     }
 
-    public function setBodyItem($item, $value) {
-        $this->body[$item] = $value;
+    public function setBody($body) {
+        $this->body = $body;
     }
 }

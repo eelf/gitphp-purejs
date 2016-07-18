@@ -12,6 +12,8 @@ asdqsdq {
     bottom: 0;
     background: #fdd;
     color: #d00;
+    font: 11px Menlo, monospace;
+    white-space: pre;
 }
 #log {
     font: 11px Menlo, monospace;

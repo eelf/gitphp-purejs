@@ -5,10 +5,10 @@
 
 namespace Gitphp;
 
-class Controller_Logout {
+class Controller_Projects {
     public function run(Request $Req, Response $Resp) {
-        $Session = Context::session();
-        $Session->destroy();
-        $Resp->setBodyItem('page', 'login');
+        $list = [
+        ];
+        $Resp->setBodyItem('projects', array_keys($list));
     }
 }

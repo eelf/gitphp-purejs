@@ -2,6 +2,9 @@
 var Transport = {
     request: function(method, url, data, cb) {
         var xhr = new XMLHttpRequest();
+        if (method == 'GET' && data) {
+
+        }
         xhr.open(method, url, true);
 
         xhr.setRequestHeader('Content-Type', 'application/json');
@@ -46,5 +49,8 @@ var Transport = {
     },
     logout: function(data, cb) {
         Transport.get_json('POST', '/app/logout', data, cb);
+    },
+    get_projects: function(data, cb) {
+        Transport.get_json('GET', '/app/projects', data, cb);
     }
 };

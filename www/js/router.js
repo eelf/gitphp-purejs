@@ -3,7 +3,7 @@ var Router = {
     init: function () {
         window.addEventListener('popstate', Router.gone, false);
     },
-    gone: function(e) {
+    gone: function() {
         //console.trace();
         console.log('gone', location.pathname);
         if (location.pathname == '/dashboard') {

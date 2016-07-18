@@ -43,19 +43,19 @@ class Request {
     }
 
     public function get($name) {
-        return isset($this->get[$name]) ? $this->get[$name] : null;
+        return $this->get[$name] ?? null;
     }
 
     public function cookie($name) {
-        return isset($this->cookie[$name]) ? $this->cookie[$name] : null;
+        return $this->cookie[$name] ?? null;
     }
 
     public function server($name) {
-        return isset($this->server[$name]) ? $this->server[$name] : null;
+        return $this->server[$name] ?? null;
     }
 
     public function comp($idx) {
-        return isset($this->url_parts['path_exp'][$idx]) ? $this->url_parts['path_exp'][$idx] : null;
+        return $this->url_parts['path_exp'][$idx] ?? null;
     }
 
     public function body() {

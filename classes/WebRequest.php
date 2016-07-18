@@ -18,11 +18,13 @@ class WebRequest {
         return self::$logger;
     }
 
-    public static function generic() {
-//        ini_set('display_errors', 1);
+    public static function generic(\Bootstrap $bootstrap) {
         self::$logger = new Log_Logger();
 
         set_error_handler([self::$logger, 'error']);
+
+        $Config = new Config($bootstrap->getRoot() . '/config.php');
+        Context::config($Config);
 
         $Req = Request::initFromServer();
 
@@ -30,15 +32,19 @@ class WebRequest {
 
         $Resp = new Response();
 
-        if ($Controller instanceof IWantSession) {
-            $Controller->Session = Session::startFromCookie($Req, $Resp);
-        }
-        /** @var $Controller Controller_Startup */
-        $Controller->run($Req, $Resp);
+        $Session = Session::startFromCookie($Req, $Resp);
+        Context::session($Session);
 
-        if ($Controller instanceof IWantSession) {
-            $Controller->Session->finish();
+        $skip_auth = [
+            Controller_Login::class,
+        ];
+        if (empty($Session['user_id']) && !in_array(get_class($Controller), $skip_auth)) {
+            $Resp->setBodyItem('page', 'login');
+        } else {
+            $Controller->run($Req, $Resp);
         }
+
+        $Session->finish();
 
         $Resp->setBodyItem('log', self::$logger->getLines());
 
