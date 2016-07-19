@@ -108,7 +108,7 @@ class Jira
             'http' => [
                 'method' => $http_method,
                 'header' => implode("\r\n", $headers) . "\r\n",
-                'ignore_errors' => true,
+                'ignore_errors' => /*rest api uses error codes in normal situations*/true,
             ],
         ];
         if ($data !== null) $opts['http']['content'] = $data;
@@ -117,7 +117,7 @@ class Jira
         $url = $Config->get('jira_url') . $method;
 
         $body = file_get_contents($url, null, $ctx);
-        $Response = new Http_Response(isset($http_response_header) ? $http_response_header : [], $body);
+        $Response = new Http_Response($http_response_header ?? [], $body);
 
         return $Response;
     }

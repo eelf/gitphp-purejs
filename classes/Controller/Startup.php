@@ -7,8 +7,13 @@ namespace Gitphp;
 
 class Controller_Startup {
     public function run(Request $Req, Response $Resp) {
-        $Session = Context::session();
-        if (!$Session['user_id']) $Resp->setBodyItem('page', 'login');
-        else $Resp->setBodyItem('page', 'dashboard');
+        $url = parse_url($Req->get('url'));
+
+        $Resp->setBodyItem('url_parsed', $url);
+
+        $page = ltrim($url['path'], '/');
+        if (!$page) $page = 'dashboard';
+
+        $Resp->setBodyItem('page', $page);
     }
 }

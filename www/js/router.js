@@ -1,19 +1,35 @@
 
 var Router = {
+    routes: {
+        'dashboard': function () {
+            utils.require(['DashboardWidget', 'Context'], function() {DashboardWidget.render();});
+        },
+        'login': function() {
+            utils.require(['LoginWidget'], function() {LoginWidget.render();});
+        },
+        'logout': function() {
+            Transport.logout({}, function(d) {
+                Router.go(d.page);
+            });
+        },
+        'project': function(params) {
+            utils.require(['ProjectWidget', 'Context'], function() {ProjectWidget.render(params);});
+        }
+    },
+
     init: function () {
         window.addEventListener('popstate', Router.gone, false);
     },
     gone: function() {
-        //console.trace();
         console.log('gone', location.pathname);
-        if (location.pathname == '/dashboard') {
-            utils.require(['DashboardWidget'], function() {DashboardWidget.render();});
-        } else if (location.pathname == '/login') {
-            utils.require(['LoginWidget'], function() {LoginWidget.render();});
-        } else if (location.pathname == '/logout') {
-            Transport.logout({}, function(d) {
-                Router.go(d.page);
-            });
+        var path = location.pathname;
+        if (path.charAt(0) == '/') path = path.substr(1);
+
+        var path_exp = path.split('/');
+
+        console.log(path_exp);
+        if (Router.routes[path_exp[0]]) {
+            Router.routes[path_exp[0]](path_exp);
         } else {
             console.log('do not know where to go when ' + location.pathname);
         }

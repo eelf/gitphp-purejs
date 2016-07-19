@@ -46,6 +46,10 @@ class Request {
         return $this->get[$name] ?? null;
     }
 
+    public function post($name) {
+        return $this->post[$name] ?? null;
+    }
+
     public function cookie($name) {
         return $this->cookie[$name] ?? null;
     }

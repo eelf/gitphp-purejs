@@ -3,7 +3,12 @@ var Transport = {
     request: function(method, url, data, cb) {
         var xhr = new XMLHttpRequest();
         if (method == 'GET' && data) {
-
+            url += '?' + Object.keys(data)
+                .map(function(key) {
+                    return key + "=" + encodeURIComponent(data[key])
+                })
+                .join("&");
+            data = null;
         }
         xhr.open(method, url, true);
 
@@ -52,5 +57,8 @@ var Transport = {
     },
     get_projects: function(data, cb) {
         Transport.get_json('GET', '/app/projects', data, cb);
+    },
+    get_heads: function(data, cb) {
+        Transport.get_json('GET', '/app/heads', data, cb);
     }
 };

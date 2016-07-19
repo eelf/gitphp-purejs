@@ -32,12 +32,16 @@ class WebRequest {
 
         $Resp = new Response();
 
+        // echo url param
+        $Resp->setBodyItem('req.url', $Req->get('url'));
+
         $Session = Session::startFromCookie($Req, $Resp);
         Context::session($Session);
 
         $skip_auth = [
             Controller_Login::class,
         ];
+        // @todo acl
         if (empty($Session['user_id']) && !in_array(get_class($Controller), $skip_auth)) {
             $Resp->setBodyItem('page', 'login');
         } else {

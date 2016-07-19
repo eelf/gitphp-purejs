@@ -9,10 +9,10 @@ var Views = {
         };
         Transport.request('GET', '/templates/' + name + '.html', null, load_cb);
     },
-    get: function(name, cb) {
+    get: function(name, cb, ctx) {
         console.log('loading template:' + name);
         var apply_cb = function(page) {
-            cb(page);
+            cb.call(ctx, page);
         };
         if (!(name in this.pages)) {
             Views.load(name, apply_cb);

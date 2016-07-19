@@ -10,6 +10,7 @@ class Routes {
         'login' => Controller_Login::class,
         'logout' => Controller_Logout::class,
         'projects' => Controller_Projects::class,
+        'heads' => Controller_Heads::class,
         '' => Controller_Startup::class,
     ];
 
