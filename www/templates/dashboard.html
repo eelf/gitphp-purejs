@@ -1,12 +1,5 @@
 <h1>Dashboard</h1>
 
-<ul>
-    <li><a id="dashboard_logout" href="{{logout_url}}">Logout</a></li>
-    {{begin items}}
-    <li><a id="{{id}}" href="{{url}}">{{name}}</a></li>
-    {{end items}}
-</ul>
-
 <div id="projects">
 {{begin project}}
     <div>
@@ -16,7 +9,3 @@
 {{end project}}
 </div>
 
-
-<div>
-    Powered by <a href="https://github.com/eelf/gitphp">gitphp</a>
-</div>

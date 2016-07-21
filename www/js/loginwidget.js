@@ -1,14 +1,10 @@
 
 var LoginWidget = {
     el: null,
-    init: function(el) {
-        var button = el.querySelector('button[type=submit]');
-        button.addEventListener('click', LoginWidget.submit);
-    },
     submit: function(e) {
         e.preventDefault && e.preventDefault();
-        var name = LoginWidget.el.querySelector('#login_name').value;
-        var password = LoginWidget.el.querySelector('#login_password').value;
+        var name = document.getElementById('login_name').value;
+        var password = document.getElementById('login_password').value;
         Transport.login(JSON.stringify({name: name, password: password}), function(resp) {
             if (resp.page) {
                 Router.go(resp.page);
@@ -18,12 +14,14 @@ var LoginWidget = {
         });
     },
     render: function() {
-        Views.get('login', function(page) {
-            //LoginWidget.el = document.createElement('div');
-            LoginWidget.el = document.body;
-            LoginWidget.el.innerHTML = page;
-            //document.body.appendChild(LoginWidget.el);
-            LoginWidget.init(LoginWidget.el);
-        });
+        Views.get('login', LoginWidget.my_template_ready);
+    },
+    my_template_ready: function(page) {
+        page = Views.fetch(page, {});
+
+        Layout.render(page, LoginWidget.layout_ready);
+    },
+    layout_ready: function() {
+        document.getElementById('submit').addEventListener('click', LoginWidget.submit);
     }
 };

@@ -4,7 +4,7 @@ With period .period calls cb() with data provided in fire()
 since fire() called
 until cancel() called or cb() returns true
  */
-function Context(cb) {
+function Waiter(cb) {
     this.period = 500;
     this.cb = cb;
     //this.active = true;
@@ -12,13 +12,13 @@ function Context(cb) {
     this.periodical_bound = this.periodical.bind(this);
 }
 
-Context.prototype.cancel = function() {
+Waiter.prototype.cancel = function() {
     clearTimeout(this.to);
     //this.active = false;
 };
 
-Context.prototype.periodical = function() {
-    console.log('Context.prototype.periodical', this.data);
+Waiter.prototype.periodical = function() {
+    console.log('Waiter.prototype.periodical', this.data);
     if (this.cb(this.data)) {
         this.cancel();
     } else {
@@ -26,7 +26,19 @@ Context.prototype.periodical = function() {
     }
 };
 
-Context.prototype.fire = function(data) {
+Waiter.prototype.fire = function(data) {
     this.data = data;
     this.periodical_bound(true);
 };
+
+function NewWaiterElementInnerHtml(id) {
+    return new Waiter(
+        function(page) {
+            var el;
+            if (el = document.getElementById(id)) {
+                el.innerHTML = page;
+                return true;
+            }
+        }
+    )
+}

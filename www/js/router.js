@@ -13,7 +13,17 @@ var Router = {
             });
         },
         'project': function(params) {
-            utils.require(['ProjectWidget', 'Context'], function() {ProjectWidget.render(params);});
+            console.log(params);
+
+            utils.require(['ProjectWidget', 'Context'], function () {
+                ProjectWidget.render(params);
+            });
+        }
+    },
+
+    get_url: function(page, params) {
+        if (page == 'project') {
+            return '/project' + params.project;
         }
     },
 
@@ -27,9 +37,9 @@ var Router = {
 
         var path_exp = path.split('/');
 
-        console.log(path_exp);
+        console.log('gone:path_exp', path_exp);
         if (Router.routes[path_exp[0]]) {
-            Router.routes[path_exp[0]](path_exp);
+            Router.routes[path_exp[0]](path_exp.slice(1));
         } else {
             console.log('do not know where to go when ' + location.pathname);
         }

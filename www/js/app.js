@@ -57,7 +57,8 @@ var App = {
         utils.require([
             'Transport',
             'Views',
-            'Router'
+            'Router',
+            'Layout'
         ], function() {
             App.AllModulesLoaded = true;
             App.ready();
