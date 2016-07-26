@@ -35,6 +35,14 @@ body {
     background-color: #f5f5f5;
 }
 
+.bottom {
+    border-top: 1px solid #eee;
+    color: #767676;
+    padding: 20px 0;
+    margin-top: 20px;
+    font-size: 12px;
+}
+
 .container {
     width: 980px;
     margin: 0 auto;

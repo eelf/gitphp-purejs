@@ -1,32 +1,32 @@
 
-var ProjectWidget = {
+var Project = {
     loading_applier: null,
-    params: null,
-    render: function(params) {
-        ProjectWidget.params = params;
-        ProjectWidget.loading_applier = NewWaiterElementInnerHtml('heads');
+    project: null,
+    render: function(project) {
+        Project.project = project;
+        Project.loading_applier = Waiter.NewElementInnerHtml('heads');
 
-        Views.get('loading', ProjectWidget.loading_applier.fire, ProjectWidget.loading_applier);
+        Views.get('loading', Project.loading_applier.fire, Project.loading_applier);
 
-        Views.get('project', ProjectWidget.my_template_ready);
+        Views.get('project', Project.my_template_ready);
     },
     my_template_ready: function(page) {
-        var html = Views.fetch(page, {project_name: ProjectWidget.params[0]});
+        var html = Views.fetch(page, {project_name: Project.project});
 
-        Layout.render(html, ProjectWidget.layout_ready);
+        Layout.render(html, Project.layout_ready);
     },
     layout_ready: function() {
 
-        Transport.get_heads({project: ProjectWidget.params[0]}, ProjectWidget.get_heads_ready);
+        Transport.get_heads({project: Project.project}, Project.get_heads_ready);
     },
     get_heads_ready: function(d) {
-        ProjectWidget.loading_applier.cancel();
+        Project.loading_applier.cancel();
 
         var heads = d.heads.map(function(el) {
             return {
                 real_name: el.name,
                 name: el.name.substr("refs/heads/".length),
-                url: "/project/" + ProjectWidget.params[0] + "/head/" + encodeURIComponent(el.name),
+                url: "/project/" + Project.project + "/head/" + encodeURIComponent(el.name),
             };
         });
 

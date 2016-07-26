@@ -1,5 +1,5 @@
 
-var LoginWidget = {
+var Login = {
     el: null,
     submit: function(e) {
         e.preventDefault && e.preventDefault();
@@ -14,14 +14,14 @@ var LoginWidget = {
         });
     },
     render: function() {
-        Views.get('login', LoginWidget.my_template_ready);
+        Views.get('login', Login.my_template_ready);
     },
     my_template_ready: function(page) {
         page = Views.fetch(page, {});
 
-        Layout.render(page, LoginWidget.layout_ready);
+        Layout.render(page, Login.layout_ready);
     },
     layout_ready: function() {
-        document.getElementById('submit').addEventListener('click', LoginWidget.submit);
+        document.getElementById('submit').addEventListener('click', Login.submit);
     }
 };

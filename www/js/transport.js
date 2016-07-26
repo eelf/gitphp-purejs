@@ -20,12 +20,7 @@ var Transport = {
         };
         xhr.send(data);
     },
-    log_first: true,
     log: function(text) {
-        if (el = document.getElementById('log')) {
-            el.appendChild(document.createTextNode(text + (Transport.log_first ? '' : "\n")));
-            Transport.log_first = false;
-        }
     },
     get_json: function(method, url, data, cb) {
         Transport.request(method, url, data, function(text) {

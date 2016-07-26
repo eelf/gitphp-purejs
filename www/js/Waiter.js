@@ -7,18 +7,15 @@ until cancel() called or cb() returns true
 function Waiter(cb) {
     this.period = 500;
     this.cb = cb;
-    //this.active = true;
     this.data = null;
     this.periodical_bound = this.periodical.bind(this);
 }
 
 Waiter.prototype.cancel = function() {
     clearTimeout(this.to);
-    //this.active = false;
 };
 
 Waiter.prototype.periodical = function() {
-    console.log('Waiter.prototype.periodical', this.data);
     if (this.cb(this.data)) {
         this.cancel();
     } else {
@@ -31,7 +28,7 @@ Waiter.prototype.fire = function(data) {
     this.periodical_bound(true);
 };
 
-function NewWaiterElementInnerHtml(id) {
+Waiter.NewElementInnerHtml = function(id) {
     return new Waiter(
         function(page) {
             var el;
@@ -41,4 +38,4 @@ function NewWaiterElementInnerHtml(id) {
             }
         }
     )
-}
+};

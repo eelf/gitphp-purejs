@@ -31,7 +31,7 @@ var Views = {
                     suffix = '{{end ' + block_name + '}}',
                     result = '',
                     sub_page = match.substr(prefix.length, match.length - suffix.length - prefix.length);
-                utils.each(vars[block_name], function(el) {
+                vars[block_name].forEach(function(el) {
                     result += Views.fetch(sub_page, el);
                 });
                 return result;
@@ -53,7 +53,7 @@ var Views = {
             if (start != -1 && end != -1) {
                 sub_page = page.substr(start + prefix.length, end - start - prefix.length);
 
-                utils.each(vars, function(el) {
+                vars.forEach(function(el) {
                     result += Views.fetch(sub_page, el);
                 });
             }

@@ -2,22 +2,35 @@
 var Router = {
     routes: {
         'dashboard': function () {
-            utils.require(['DashboardWidget', 'Context'], function() {DashboardWidget.render();});
+            App.require(['page/Dashboard'], function() {Dashboard.render();});
         },
         'login': function() {
-            utils.require(['LoginWidget'], function() {LoginWidget.render();});
+            App.require(['page/Login'], function() {Login.render();});
         },
         'logout': function() {
             Transport.logout({}, function(d) {
                 Router.go(d.page);
             });
         },
-        'project': function(params) {
-            console.log(params);
 
-            utils.require(['ProjectWidget', 'Context'], function () {
-                ProjectWidget.render(params);
-            });
+        'project/head': function(project, params) {
+            console.log('route project/head', project, params);
+            //Router.go('project');
+        },
+        'project': function(params) {
+            var project = params[0],
+                sub_route = 'project/' + params[1],
+                sub_route_params = params.slice(2);
+
+            if (!project) {
+                Router.go('dashboard');
+            } else if (Router.routes[sub_route]) {
+                Router.routes[sub_route](project, sub_route_params);
+            } else {
+                App.require(['page/Project'], function () {
+                    Project.render(project);
+                });
+            }
         }
     },
 
@@ -36,10 +49,11 @@ var Router = {
         if (path.charAt(0) == '/') path = path.substr(1);
 
         var path_exp = path.split('/');
+        var route_name = path_exp.shift();
 
-        console.log('gone:path_exp', path_exp);
-        if (Router.routes[path_exp[0]]) {
-            Router.routes[path_exp[0]](path_exp.slice(1));
+        console.log('gone:path_exp', route_name, path_exp);
+        if (Router.routes[route_name]) {
+            Router.routes[route_name](path_exp);
         } else {
             console.log('do not know where to go when ' + location.pathname);
         }

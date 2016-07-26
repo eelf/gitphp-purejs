@@ -1,5 +1,5 @@
 
-var DashboardWidget = {
+var Dashboard = {
     loading_applier: null,
     render: function() {
         var vars = {
@@ -7,16 +7,16 @@ var DashboardWidget = {
             items: []
         };
 
-        DashboardWidget.loading_applier = NewWaiterElementInnerHtml('projects');
+        Dashboard.loading_applier = Waiter.NewElementInnerHtml('projects');
 
-        Views.get('loading', DashboardWidget.loading_applier.fire, DashboardWidget.loading_applier);
+        Views.get('loading', Dashboard.loading_applier.fire, Dashboard.loading_applier);
 
-        Views.get('dashboard', DashboardWidget.my_template_ready, null, vars);
+        Views.get('dashboard', Dashboard.my_template_ready, null, vars);
     },
     my_template_ready: function(page, vars) {
         page = Views.fetch(page, vars);
 
-        Layout.render(page, DashboardWidget.layout_ready);
+        Layout.render(page, Dashboard.layout_ready);
     },
     layout_ready: function() {
         document.getElementById('projects').addEventListener('click', function (e) {
@@ -25,14 +25,15 @@ var DashboardWidget = {
             Router.go(e.target.getAttribute('href').substr(1));
         }, false);
 
-        Transport.get_projects({}, DashboardWidget.get_projects_ready);
+        Transport.get_projects({}, Dashboard.get_projects_ready);
     },
 
     get_projects_ready: function(d) {
-        DashboardWidget.loading_applier.cancel();
+        if (d.page) Router.go(d.page);
+        Dashboard.loading_applier.cancel();
 
         var p = [];
-        utils.each(d.projects, function(e) {
+        d.projects.forEach(function(e) {
             p.push({name: e, url: '/project/' + e});
         });
         Views.block('dashboard', 'project', p, function(html) {
