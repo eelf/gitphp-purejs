@@ -9,7 +9,7 @@ class Log_Logger {
     protected $lines = [];
 
     public function error($errno, $errstr) {
-        $this->lines[] = "$errno:$errstr";
+        $this->lines[] = "$errno:$errstr:" . (new \Exception)->getTraceAsString();
     }
 
     public function info($msg) {

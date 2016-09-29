@@ -11,6 +11,7 @@ class Routes {
         'logout' => Controller_Logout::class,
         'projects' => Controller_Projects::class,
         'heads' => Controller_Heads::class,
+        'shortlog' => Controller_Shortlog::class,
         '' => Controller_Startup::class,
     ];
 

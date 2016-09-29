@@ -13,24 +13,24 @@ class Controller_Heads {
 
         $projects = $config->get('projects');
 
-        if (isset($projects[$project])) {
-            $dir = $projects[$project];
-
-            $Git = new Git('git', $dir);
-
-            list ($heads, $err) = $Git->getBranchHeads();
-
-            if ($err) {
-                $Resp->setBodyItem('error', $err);
-            } else {
-                foreach ($heads as $idx => $head) {
-                    $heads[$idx] = ['name' => $head];
-                }
-                $Resp->setBodyItem('heads', $heads);
-            }
-
-        } else {
+        if (!isset($projects[$project])) {
             $Resp->setBodyItem('error', 'bad project:' . $project);
+            return;
         }
+        $dir = $projects[$project];
+
+        $Git = new Git($config->get('git_bin'), $dir);
+        $Git->logger = WebRequest::logger();
+
+        list ($heads, $err) = $Git->getBranchHeads();
+
+        if ($err) {
+            $Resp->setBodyItem('error', $err);
+            return;
+        }
+        foreach ($heads as $idx => $head) {
+            $heads[$idx] = ['name' => $head];
+        }
+        $Resp->setBodyItem('heads', $heads);
     }
 }

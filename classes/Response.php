@@ -50,6 +50,6 @@ class Response {
     }
 
     public function setBodyItem($item, $value) {
-        $this->body[$item] = $value;
+        return $this->body[$item] = $value;
     }
 }

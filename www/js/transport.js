@@ -34,7 +34,7 @@ var Transport = {
                 cb(json);
             } catch (e) {
                 el = document.createElement('div');
-                el.appendChild(document.createTextNode(text + e));
+                el.appendChild(document.createTextNode(document.createTextNode(text + "\n" + typeof e + "\n" + e));
                 el.classList.add('err');
                 document.body.appendChild(el);
             }
@@ -55,5 +55,8 @@ var Transport = {
     },
     get_heads: function(data, cb) {
         Transport.get_json('GET', '/app/heads', data, cb);
+    },
+    shortlog: function(data, cb) {
+        Transport.get_json('GET', '/app/shortlog', data, cb);
     }
 };

@@ -15,7 +15,12 @@ var Router = {
 
         'project/head': function(project, params) {
             console.log('route project/head', project, params);
-            //Router.go('project');
+            if (params.length != 1) {
+                return Router.go(Router.get_url('project', {project: project}));
+            }
+            App.require(['page/Head'], function() {
+                Head.render(project, params);
+            });
         },
         'project': function(params) {
             var project = params[0],
@@ -48,7 +53,7 @@ var Router = {
         var path = location.pathname;
         if (path.charAt(0) == '/') path = path.substr(1);
 
-        var path_exp = path.split('/');
+        var path_exp = path.split('/').map(decodeURIComponent);
         var route_name = path_exp.shift();
 
         console.log('gone:path_exp', route_name, path_exp);

@@ -62,6 +62,15 @@ class Git {
         return [$tags, $heads];
     }
 
+    public function revList($ref, $limit = 101) {
+        $args = [
+            'rev-list',
+            '--max-count=' . $limit,
+            $ref,
+        ];
+        return $this->gitDiredExec($args);
+    }
+
     public function batchReadData(array $hashes) {
         $outfile = tempnam('/tmp', 'objlist');
         $hashlistfile = tempnam('/tmp', 'objlist');
@@ -87,6 +96,9 @@ class Git {
     public function gitDiredExec(array $args, $redir = '') {
         $args = array_merge(["--git-dir=$this->dir"], $args);
         $cmd = $this->bin . ' ' . implode(' ', $args) . ($redir ? " $redir" : '');
+
+        WebRequest::logger()->info(__METHOD__ . " cmd:$cmd");
+
         exec($cmd, $out, $ret);
         if ($ret) {
             return [null, "ret:$ret out:" . implode("\n", $out)];

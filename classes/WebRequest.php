@@ -32,6 +32,8 @@ class WebRequest {
 
         $Resp = new Response();
 
+        $Resp->header('Content-Type', 'application/json');
+
         // echo url param
         $Resp->setBodyItem('req.url', $Req->get('url'));
 
@@ -49,7 +51,7 @@ class WebRequest {
         }
 
         $Session->finish();
-
+        $Resp->setBodyItem('ctrl', get_class($Controller));
         $Resp->setBodyItem('log', self::$logger->getLines());
 
         $Resp->out();
